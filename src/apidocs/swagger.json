@@ -1,0 +1,1109 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a simple REST API for an inventory management system used to track loads of old vacuum tubes",
+    "version": "1.0.0",
+    "title": "Toobz API",
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "host": "localhost",
+  "basePath": "/",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "tags": [
+    {
+      "name": "tubes",
+      "description": "Tube endpoints"
+    },
+    {
+      "name": "facts",
+      "description": "Fact endpoints"
+    },
+    {
+      "name": "lookups",
+      "description": "Lookup endpoints"
+    }
+  ],
+  "paths": {
+    "/toobz": {
+      "post": {
+        "summary": "Add a new item",
+        "description": "Add a new vacuum tube to the inventory system. A new inventory number will be automatically assigned.",
+        "operationId": "addItem",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Item object to be added to the inventory",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          },
+          "405": {
+            "description": "Invalid item"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/toobz/inventory/{inventoryNbr}": {
+      "get": {
+        "summary": "Find item by inventoryNbr",
+        "description": "Find a tube by its unique inventory number",
+        "operationId": "findItemByInventoryNbr",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "inventoryNbr",
+            "in": "path",
+            "description": "Unique inventory number of the item",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          },
+          "400": {
+            "description": "Invalid inventoryNbr"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update item by inventoryNbr",
+        "description": "Update a tube by its unique inventory number",
+        "operationId": "updateItemByInventoryNbr",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Item object to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          },
+          {
+            "name": "inventoryNbr",
+            "in": "path",
+            "description": "Unique inventory number of the item",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          },
+          "400": {
+            "description": "Invalid inventoryNbr"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete item by inventoryNbr",
+        "description": "Delete a tube by its unique inventory number",
+        "operationId": "deleteItemByInventoryNbr",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "inventoryNbr",
+            "in": "path",
+            "description": "Unique inventory number of the item",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          },
+          "400": {
+            "description": "Invalid inventoryNbr"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/toobz/partnumber/{manufacturerPartNbr}": {
+      "get": {
+        "summary": "Finds items by manufacturer part number",
+        "description": "Return all items matching the given manufacturer part number. Case-insensitive and wildcarded.",
+        "operationId": "findByManufacturerPartNbr",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "manufacturerPartNbr",
+            "in": "path",
+            "description": "Manufacturer part number of the item",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Item"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid manufacturerPartNbr"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/toobz/alternatepartnumber/{alternatePartNbr}": {
+      "get": {
+        "summary": "Finds items by alternate part number",
+        "description": "Return all items matching the given alternate part number. Case-insensitive and wildcarded.",
+        "operationId": "findByAlternatePartNbr",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "alternatePartNbr",
+            "in": "path",
+            "description": "Alternate part number of the item",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Item"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid alternatePartNbr"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/toobz/product/{productName}": {
+      "get": {
+        "summary": "Finds items by product name",
+        "description": "Return all items matching the given product name. Case-insensitive and wildcarded.",
+        "operationId": "findByProductName",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "productName",
+            "in": "path",
+            "description": "Product name of the item",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Item"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid productName"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/toobz/description/{productDescription}": {
+      "get": {
+        "summary": "Finds items by product description",
+        "description": "Return all items matching the given product description. Case-insensitive and wildcarded.",
+        "operationId": "findByProductDescription",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "productDescription",
+            "in": "path",
+            "description": "Product description of the item",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Item"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid productDescription"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/toobz/condition/{productCondition}": {
+      "get": {
+        "summary": "Finds items by product condition",
+        "description": "Return all items matching the given product condition. Case-insensitive but not wildcarded.",
+        "operationId": "findByProductCondition",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "productCondition",
+            "in": "path",
+            "description": "Product condition of the item",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Item"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid productCondition"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/toobz/search/{text}": {
+      "get": {
+        "summary": "Finds items by multiple fields",
+        "description": "Return all items matching the given inventory number, manufacturer part number, manufacturer, brand name, alternate part number, product name, product description, or product condition. All matches are case-insensitive and wildcarded.",
+        "operationId": "search",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "text",
+            "in": "path",
+            "description": "Search text",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Item"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search text"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/factz": {
+      "post": {
+        "summary": "Add a new fact",
+        "description": "Add a fact about a tube.",
+        "operationId": "addFact",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "facts"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Fact object to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Fact"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Fact"
+            }
+          },
+          "405": {
+            "description": "Invalid item"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/factz/{id}": {
+      "get": {
+        "summary": "Find fact by id",
+        "description": "Find a tube fact by its unique id",
+        "operationId": "findFactById",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "facts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique id of the fact",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Fact"
+            }
+          },
+          "400": {
+            "description": "Invalid id"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update fact by id",
+        "description": "Update a tube fact by its unique id",
+        "operationId": "updateFactById",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Fact object to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Fact"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique id of the fact",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Fact"
+            }
+          },
+          "400": {
+            "description": "Invalid id"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete fact by id",
+        "description": "Delete a tube fact by its unique id",
+        "operationId": "deleteFactById",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tubes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique id of the fact",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Fact"
+            }
+          },
+          "400": {
+            "description": "Invalid id"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/factz/inventory/{inventoryNbr}": {
+      "get": {
+        "summary": "Find facts for an item",
+        "description": "Find facts for a tube by its inventory item",
+        "operationId": "findFactsByInventoryNbr",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "facts"
+        ],
+        "parameters": [
+          {
+            "name": "inventoryNbr",
+            "in": "path",
+            "description": "Unique inventory number of the tube",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Fact"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid inventoryNbr"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/factz/inventory/{inventoryNbr}/name/{name}": {
+      "get": {
+        "summary": "Find facts for an item, filtered by name",
+        "description": "Find facts for a tube by its inventory item, filtered by the fact name",
+        "operationId": "findFactsByInventoryNbrAndName",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "facts"
+        ],
+        "parameters": [
+          {
+            "name": "inventoryNbr",
+            "in": "path",
+            "description": "Unique inventory number of the tube",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "description": "Fact name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Fact"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid inventoryNbr or name"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/brands": {
+      "get": {
+        "summary": "List all brand names",
+        "description": "Return all distinct brand names",
+        "operationId": "brands",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "lookups"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search text"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/brands/{prefix}": {
+      "get": {
+        "summary": "Find all brand names matching prefix",
+        "description": "Return all distinct brand names beginning with the given prefix. Case-insensitive.",
+        "operationId": "brandsPrefix",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "lookups"
+        ],
+        "parameters": [
+          {
+            "name": "prefix",
+            "in": "path",
+            "description": "Search text",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search text"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/manufacturers": {
+      "get": {
+        "summary": "List all manufacturers",
+        "description": "Return all distinct manufacturers",
+        "operationId": "manufacturers",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "lookups"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search text"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/manufacturers/{prefix}": {
+      "get": {
+        "summary": "Find all manufacturers matching prefix",
+        "description": "Return all distinct manufacturers beginning with the given prefix. Case-insensitive.",
+        "operationId": "manufacturersPrefix",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "lookups"
+        ],
+        "parameters": [
+          {
+            "name": "prefix",
+            "in": "path",
+            "description": "Search text",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search text"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/partnumbers": {
+      "get": {
+        "summary": "List all manufacturer part numbers",
+        "description": "Return all distinct manufacturer part numbers",
+        "operationId": "manufacturerPartNbrs",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "lookups"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search text"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/partnumbers/{prefix}": {
+      "get": {
+        "summary": "Find all manufacturer part numbers matching prefix",
+        "description": "Return all distinct manufacturer part numbers beginning with the given prefix. Case-insensitive.",
+        "operationId": "manufacturerPartNbrsPrefix",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "lookups"
+        ],
+        "parameters": [
+          {
+            "name": "prefix",
+            "in": "path",
+            "description": "Search text",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search text"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "List all product names",
+        "description": "Return all distinct product names",
+        "operationId": "products",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "lookups"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search text"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/products/{prefix}": {
+      "get": {
+        "summary": "Find all product names matching prefix",
+        "description": "Return all distinct product names beginning with the given prefix. Case-insensitive.",
+        "operationId": "productsPrefix",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "lookups"
+        ],
+        "parameters": [
+          {
+            "name": "prefix",
+            "in": "path",
+            "description": "Search text",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search text"
+          },
+          "500": {
+            "description": "Unknown error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Fact": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "createdOn": {
+          "type": "string"
+        },
+        "lastModified": {
+          "type": "string"
+        }
+      }
+    },
+    "Item": {
+      "type": "object",
+      "required": [
+        "manufacturerPartNbr"
+      ],
+      "properties": {
+        "inventoryNbr": {
+          "type": "string",
+          "example": "AK-000042"
+        },
+        "manufacturerPartNbr": {
+          "type": "string",
+          "example": "12AX74"
+        },
+        "manufacturer": {
+          "type": "string",
+          "example": "Westinghouse"
+        },
+        "brandName": {
+          "type": "string",
+          "example": "RCA"
+        },
+        "alternatePartNbr": {
+          "type": "string",
+          "example": "3041"
+        },
+        "productName": {
+          "type": "string",
+          "example": "Vacumator 2000"
+        },
+        "productDescription": {
+          "type": "string",
+          "example": "Vacuumator 2000 with enhanced ability to suck"
+        },
+        "productCondition": {
+          "type": "string",
+          "enum": [
+            "new",
+            "used"
+          ],
+          "example": "used"
+        },
+        "testStatus": {
+          "type": "string"
+        },
+        "facts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Fact"
+          }
+        },
+        "createdOn": {
+          "type": "string"
+        },
+        "lastModified": {
+          "type": "string"
+        }
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

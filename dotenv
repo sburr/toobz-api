@@ -1,0 +1,10 @@
+# comments are ignored
+PGHOST=localhost
+PGPORT=5432
+PGDATABASE=toobz
+PGUSER=postgres
+PGPASSWORD=postgres
+SSL_CERTFILE="cert.pem"
+SSL_KEYFILE="key.pem"
+HTTP_PORT=8000
+HTTPS_PORT=8443
