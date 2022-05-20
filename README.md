@@ -57,6 +57,8 @@ See the [Open API spec](src/apidocs/swagger.json) for full details.
 
 Or, better yet, assuming that you are running service locally with the default port, simply view `https://localhost:8443/apidocs` in a browser for a much more pleasant experience ;)
 
+![Screenshot](src/apidocs/screenshot.png)
+
 You may also find that tools like [Swagger UI](https://swagger.io/tools/swagger-ui) or [Swagger Editor](https://swagger.io/tools/swagger-editor) prove useful.
 
 ## Development
